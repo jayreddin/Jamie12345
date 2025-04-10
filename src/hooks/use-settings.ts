@@ -11,6 +11,8 @@ interface SettingsContextProps {
   setOpenRouterApiKey: (apiKey: string) => void;
   activeModel: string;
   setActiveModel: (model: string) => void;
+  apiProvider: string;
+  setApiProvider: (provider: string) => void;
 }
 
 const SettingsContext = createContext<SettingsContextProps | undefined>(
@@ -37,11 +39,17 @@ export const SettingsProvider = ({children}: {children: React.ReactNode}) => {
     }
     return '';
   });
-  const [activeModel, setActiveModel] = useState<string>(() => {
+    const [activeModel, setActiveModel] = useState<string>(() => {
     if (typeof localStorage !== 'undefined') {
-      return localStorage.getItem('activeModel') || 'Default Model';
+      return localStorage.getItem('activeModel') || 'mistralai/Mistral-7B-Instruct-v0.1';
     }
-    return 'Default Model';
+    return 'mistralai/Mistral-7B-Instruct-v0.1';
+  });
+  const [apiProvider, setApiProvider] = useState<string>(() => {
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem('apiProvider') || 'openrouter';
+    }
+    return 'openrouter';
   });
 
   useEffect(() => {
@@ -64,13 +72,19 @@ export const SettingsProvider = ({children}: {children: React.ReactNode}) => {
     }
   }, [openRouterApiKey]);
 
-    useEffect(() => {
+  useEffect(() => {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('activeModel', activeModel);
     }
   }, [activeModel]);
 
-  const value = {
+  useEffect(() => {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('apiProvider', apiProvider);
+    }
+  }, [apiProvider]);
+
+  const value: SettingsContextProps = {
     theme,
     setTheme,
     textSize,
@@ -79,12 +93,12 @@ export const SettingsProvider = ({children}: {children: React.ReactNode}) => {
     setOpenRouterApiKey,
     activeModel,
     setActiveModel,
+    apiProvider,
+    setApiProvider,
   };
 
   return (
-    <SettingsContext.Provider value={value}>
-      {children}
-    </SettingsContext.Provider>
+    <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>
   );
 };
 
@@ -95,3 +109,4 @@ export const useSettings = () => {
   }
   return context;
 };
+

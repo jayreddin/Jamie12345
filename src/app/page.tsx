@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Icons} from '@/components/icons';
@@ -29,8 +29,8 @@ const Main = () => {
       // Simulate model response
       setTimeout(() => {
         const modelTimestamp = new Date().toLocaleTimeString();
-        setMessages([
-          ...messages,
+        setMessages(prevMessages => [
+          ...prevMessages,
           {sender: 'model', text: 'This is a simulated response.', timestamp: modelTimestamp},
         ]);
       }, 1000);
@@ -39,11 +39,18 @@ const Main = () => {
   };
 
   const restoreSession = (sessionMessages: {sender: 'user' | 'model'; text: string; timestamp: string}[]) => {
-    setMessages(sessionMessages);
-    toast({
-      title: 'Session Restored',
-      description: 'The selected chat session has been restored.',
-    });
+    if (sessionMessages && sessionMessages.length > 0) {
+      setMessages(sessionMessages);
+      toast({
+        title: 'Session Restored',
+        description: 'The selected chat session has been restored.',
+      });
+    } else {
+      toast({
+        title: 'No messages to restore',
+        description: 'The selected chat session has no messages.',
+      });
+    }
   };
 
   return (
@@ -58,7 +65,7 @@ const Main = () => {
       {/* Message Display */}
       <div className="flex-grow overflow-y-auto p-4">
         <div className="space-y-2">
-          {messages.map((message, index) => (
+          {messages && messages.map((message, index) => (
             <div
               key={index}
               className={`flex flex-col rounded-lg px-3 py-2 w-fit max-w-[80%] ${message.sender === 'user' ? 'bg-primary text-primary-foreground ml-auto' : 'bg-secondary text-secondary-foreground mr-auto'}`}

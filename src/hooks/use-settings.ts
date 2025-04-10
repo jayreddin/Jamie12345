@@ -98,7 +98,9 @@ export const SettingsProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   return (
-    <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>
+    <SettingsContext.Provider value={value}>
+      {children}
+    </SettingsContext.Provider>
   );
 };
 

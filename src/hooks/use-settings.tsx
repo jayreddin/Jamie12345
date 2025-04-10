@@ -84,7 +84,7 @@ export const SettingsProvider = ({children}: {children: React.ReactNode}) => {
     }
   }, [apiProvider]);
 
-  const value: SettingsContextProps = {
+  const value = {
     theme,
     setTheme,
     textSize,
@@ -111,4 +111,3 @@ export const useSettings = () => {
   }
   return context;
 };
-

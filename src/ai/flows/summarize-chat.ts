@@ -1,4 +1,4 @@
-// 'use server';
+'use server';
 /**
  * @fileOverview Summarizes the current chat conversation.
  *
